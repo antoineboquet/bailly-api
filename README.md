@@ -26,7 +26,7 @@ along with this program. If not, see https://www.gnu.org/licenses/agpl-3.0.fr.ht
 
 ## Analyse morphologique
 
-Cette application utilise l'analyseur morphologique [Morpheus](https://github.com/PerseusDL/morpheus) (Gregory Crane _et al._ pour le compte de l'université Tufts), distribué sous licence _Creative Commons Attribution-ShareAlike 3.0 United States License_ (CC BY-SA 3.0).
+Cette application utilise l'analyseur morphologique [Morpheus](https://github.com/PerseusDL/morpheus) (Gregory Crane _et al._ pour le compte de l'université Tufts), distribué sous licence _Creative Commons Attribution-ShareAlike 3.0 United States (CC BY-SA 3.0 US).
 
 ## Données
 
