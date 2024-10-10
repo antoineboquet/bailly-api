@@ -1,0 +1,20 @@
+{
+  "name": "bailly-api",
+  "version": "1.0.0",
+  "license": "agpl-3.0",
+  "private": true,
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "greek-conversion": "^0.14.1",
+    "hono": "^4.6.3"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "husky": "^9.1.6"
+  }
+}
