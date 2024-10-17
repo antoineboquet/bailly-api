@@ -1,3 +1,4 @@
+import { AdditionalChar, KeyType, toTransliteration } from "greek-conversion";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { jwt, type JwtVariables } from "hono/jwt";
@@ -55,12 +56,22 @@ app.get("/entry/random", async (c) => {
   return c.json(entry);
 });
 
-app.get("/entry/:q", async (c) => {
-  const q = decodeURIComponent(c.req.param("q")).trim();
+app.get("/entry/:uri", async (c) => {
+  const uri = decodeURIComponent(c.req.param("uri")).trim();
   const fields = setSelectedFields(c.req.query("fields"));
   const siblings = c.req.query("siblings") !== undefined;
 
-  const entry = await getEntry({ q, fields, siblings });
+  // Handle malformed URIs smoothly.
+  const formattedURI = toTransliteration(uri, KeyType.TRANSLITERATION, {
+    additionalChars: AdditionalChar.DIGAMMA,
+    removeDiacritics: true,
+    transliterationStyle: {
+      gammaNasal_n: true,
+      useCxOverMacron: true
+    }
+  });
+
+  const entry = await getEntry({ q: formattedURI, fields, siblings });
   return c.json(entry);
 });
 
