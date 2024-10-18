@@ -62,16 +62,18 @@ app.get("/entry/:uri", async (c) => {
   const siblings = c.req.query("siblings") !== undefined;
 
   // Handle malformed URIs smoothly.
-  const formattedURI = toTransliteration(uri, KeyType.TRANSLITERATION, {
+  // @fixme: using option `removeDiacritics` removes dashes and
+  //         this prevents access to contract verbs for example.
+  const formattedUri = toTransliteration(uri, KeyType.TRANSLITERATION, {
     additionalChars: AdditionalChar.DIGAMMA,
-    removeDiacritics: true,
+    //removeDiacritics: true,
     transliterationStyle: {
       gammaNasal_n: true,
       useCxOverMacron: true
     }
   });
 
-  const entry = await getEntry({ q: formattedURI, fields, siblings });
+  const entry = await getEntry({ q: formattedUri, fields, siblings });
   return c.json(entry);
 });
 
