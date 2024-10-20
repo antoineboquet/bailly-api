@@ -72,6 +72,7 @@ function validateInput(str: string): boolean {
 export async function getEntries<K extends keyof QueryableFields>({
   q,
   fields,
+  morphology,
   caseSensitive,
   limit
 }: ApiLookupParams<K>): Promise<ApiLookupResponse<K>> {
@@ -178,7 +179,7 @@ export async function getEntries<K extends keyof QueryableFields>({
       version: settings.dbVersion,
       count: data.length,
       countAll: data[0].countAll ?? -1,
-      lemmata: morpheusData,
+      morphology: morphology ? morpheusData : undefined,
       entries: uniqueEntries.map((item) => {
         const isExact: boolean = (() => {
           return caseSensitive

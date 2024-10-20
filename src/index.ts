@@ -80,10 +80,17 @@ app.get("/entry/:uri", async (c) => {
 app.get("/lookup/:q", async (c) => {
   const q = decodeURIComponent(c.req.param("q")).trim();
   const fields = setSelectedFields(c.req.query("fields"));
+  const morphology = c.req.query("morphology") !== undefined;
   const caseSensitive = c.req.query("caseSensitive") !== undefined;
   const limit = setNumericParam(c.req.query("limit"));
 
-  const entries = await getEntries({ q, fields, caseSensitive, limit });
+  const entries = await getEntries({
+    q,
+    fields,
+    morphology,
+    caseSensitive,
+    limit
+  });
   return c.json(entries);
 });
 

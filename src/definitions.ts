@@ -8,6 +8,7 @@ export type PartialExcept<T, K extends keyof T> = Pick<T, K> &
 export type ApiParams<K extends keyof QueryableFields> = {
   q: string;
   fields: NonEmptyArray<keyof Pick<QueryableFields, K>>;
+  morphology: boolean;
   caseSensitive: boolean;
   lengthRange: [number, number?] | null;
   limit?: number;
@@ -21,7 +22,7 @@ export type ApiEntryParams<K extends keyof QueryableFields> = Pick<
 >;
 export type ApiLookupParams<K extends keyof QueryableFields> = Pick<
   ApiParams<K>,
-  "q" | "fields" | "caseSensitive" | "limit"
+  "q" | "fields" | "morphology" | "caseSensitive" | "limit"
 >;
 export type ApiRandomEntryParams<K extends keyof QueryableFields> = Pick<
   ApiParams<K>,
@@ -58,7 +59,7 @@ export interface ApiLookupResponse<K extends keyof QueryableFields>
     version: string;
     count: number;
     countAll: number;
-    lemmata: MorpheusData;
+    morphology?: MorpheusData;
     entries: PartialExcept<
       Entry<K>,
       K | "children" | "isExact" | "isMorpheus"
