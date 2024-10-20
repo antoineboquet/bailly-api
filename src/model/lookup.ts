@@ -118,10 +118,12 @@ export async function getEntries<K extends keyof QueryableFields>({
   let morpheusData: MorpheusData = {};
   let morpheusSQLStatements: string = "";
   if (isMorpheusNeeded) {
+    const betaCode = toBetaCode(searchStr, KeyType.GREEK, {
+      removeDiacritics: true
+    });
+
     morpheusData = await lookupMorpheus(
-      toBetaCode(searchStr, KeyType.GREEK, {
-        removeDiacritics: true
-      })
+      caseSensitive ? betaCode : betaCode.toLocaleLowerCase()
     );
 
     // `morpheusData` keys are unique lemmata.
