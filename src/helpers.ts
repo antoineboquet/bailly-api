@@ -51,7 +51,10 @@ export function setUniqueEntries(
     caseSensitive?: boolean;
   }
 ): (PartialExcept<Entry, "word" | "children"> &
-  Optional<DatabaseEntry, "searchable" | "searchableCaseInsensitive">)[] {
+  Optional<
+    DatabaseEntry,
+    "searchableAtonic" | "searchableAtonicCaseInsensitive"
+  >)[] {
   const uniqueEntries: PartialExcept<Entry, "word">[] = [];
   for (const [word, entries] of Object.entries(
     Object.groupBy(inputEntries, ({ word }) => word)
@@ -61,7 +64,10 @@ export function setUniqueEntries(
     if (entries.length > 1) {
       // Create a common entry and place the actual entries as children.
       let entry: PartialExcept<Entry<"word">, "word" | "children"> &
-        Optional<DatabaseEntry, "searchable" | "searchableCaseInsensitive"> = {
+        Optional<
+          DatabaseEntry,
+          "searchableAtonic" | "searchableAtonicCaseInsensitive"
+        > = {
         ...entries[0]
       };
 
@@ -75,10 +81,10 @@ export function setUniqueEntries(
       if (params && Object.keys(params).length) {
         if ("caseSensitive" in params) {
           if (params.caseSensitive) {
-            entry.searchable = entries[0].searchable ?? "";
+            entry.searchableAtonic = entries[0].searchableAtonic ?? "";
           } else {
-            entry.searchableCaseInsensitive =
-              entries[0].searchableCaseInsensitive ?? "";
+            entry.searchableAtonicCaseInsensitive =
+              entries[0].searchableAtonicCaseInsensitive ?? "";
           }
         }
       }

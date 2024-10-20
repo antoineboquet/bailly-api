@@ -103,6 +103,10 @@ export async function getEntries<K extends keyof QueryableFields>({
     ? "searchable"
     : "searchableCaseInsensitive";
 
+  const searchableAtonicField: string = caseSensitive
+    ? "searchableAtonic"
+    : "searchableAtonicCaseInsensitive";
+
   const isMorpheusNeeded: boolean =
     !/\s/g.test(searchStr) && // Morpheus ignores whitespace
     !searchStr.toLowerCase().includes("ϝ") && // Morpheus ignores letter digamma
@@ -121,12 +125,11 @@ export async function getEntries<K extends keyof QueryableFields>({
     );
 
     // `morpheusData` keys are unique lemmata.
-    morpheusSQLStatements = Object.keys(morpheusData).reduce((acc, lemma) => {
-      const searchableLemma = removeGreekVariants(
-        removeDiacritics(lemma, KeyType.GREEK)
-      );
-      return acc + `OR ${searchableField} = "${searchableLemma}" `;
-    }, "");
+    morpheusSQLStatements = Object.keys(morpheusData).reduce(
+      (acc, lemma) =>
+        acc + `OR ${searchableField} = "${removeGreekVariants(lemma)}" `,
+      ""
+    );
   }
 
   // Field `word` is mandatory in order to retrieve unique entries
@@ -134,14 +137,14 @@ export async function getEntries<K extends keyof QueryableFields>({
   const sql = `
     SELECT ${
       !fieldsStr.includes("word") ? `word, ${fieldsStr}` : fieldsStr
-    }, ${searchableField}, (
+    }, ${searchableAtonicField}, (
       SELECT COUNT(orderedID)
       FROM bailly
-      WHERE ${searchableField} ${comparisonOperator} $query
+      WHERE ${searchableAtonicField} ${comparisonOperator} $query
       ${morpheusSQLStatements}
     ) as countAll
     FROM bailly
-    WHERE ${searchableField} ${comparisonOperator} $query
+    WHERE ${searchableAtonicField} ${comparisonOperator} $query
     ${morpheusSQLStatements}
     ORDER BY orderedID
     LIMIT $limit 
@@ -183,16 +186,16 @@ export async function getEntries<K extends keyof QueryableFields>({
       entries: uniqueEntries.map((item) => {
         const isExact: boolean = (() => {
           return caseSensitive
-            ? searchStr === item.searchable
-            : searchStr.toLowerCase() === item.searchableCaseInsensitive;
+            ? searchStr === item.searchableAtonic
+            : searchStr.toLowerCase() === item.searchableAtonicCaseInsensitive;
         })();
 
         const isMorpheus: boolean = (() => {
           if (!isMorpheusNeeded) return false;
 
           return caseSensitive
-            ? !item.searchable?.startsWith(searchStr)
-            : !item.searchableCaseInsensitive?.startsWith(
+            ? !item.searchableAtonic?.startsWith(searchStr)
+            : !item.searchableAtonicCaseInsensitive?.startsWith(
                 searchStr.toLowerCase()
               );
         })();
@@ -201,7 +204,9 @@ export async function getEntries<K extends keyof QueryableFields>({
           item: Partial<Entry> &
             Optional<
               DatabaseEntry,
-              "countAll" | "searchable" | "searchableCaseInsensitive"
+              | "countAll"
+              | "searchableAtonic"
+              | "searchableAtonicCaseInsensitive"
             >
         ): void => {
           // Property `word` has been picked in order to group entries.
@@ -210,8 +215,8 @@ export async function getEntries<K extends keyof QueryableFields>({
           delete item.countAll;
 
           caseSensitive
-            ? delete item.searchable
-            : delete item.searchableCaseInsensitive;
+            ? delete item.searchableAtonic
+            : delete item.searchableAtonicCaseInsensitive;
         };
 
         removeExtraFields(item);

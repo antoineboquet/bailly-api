@@ -74,6 +74,8 @@ export type DatabaseEntry = {
   uri: string;
   searchable: string;
   searchableCaseInsensitive: string;
+  searchableAtonic: string;
+  searchableAtonicCaseInsensitive: string;
   htmlDefinition: string;
   definition: string;
   htmlExcerpt: string;
