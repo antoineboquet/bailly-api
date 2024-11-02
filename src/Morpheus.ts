@@ -100,7 +100,7 @@ export class Morpheus {
     const output = await process.output();
     const result = new TextDecoder().decode(output.stdout);
 
-    //process.unref();
+    process.unref();
     return result;
   }
 
