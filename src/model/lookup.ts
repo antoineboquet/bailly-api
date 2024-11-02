@@ -2,7 +2,8 @@ import {
   KeyType,
   removeDiacritics,
   removeGreekVariants,
-  toBetaCode
+  toBetaCode,
+  toGreek
 } from "greek-conversion";
 import { Database } from "../Database.ts";
 import type {
@@ -73,6 +74,7 @@ function validateInput(str: string): boolean {
 
 export async function getEntries<K extends keyof QueryableFields>({
   q,
+  inputMode,
   fields,
   morphology,
   caseSensitive,
@@ -84,6 +86,10 @@ export async function getEntries<K extends keyof QueryableFields>({
   const db = await Database.getConnection();
   const morpheus = await Morpheus.getMorpheus();
   const settings = Settings.getSettings();
+
+  if ([KeyType.BETA_CODE, KeyType.TRANSLITERATION].includes(inputMode)) {
+    q = toGreek(q, inputMode);
+  }
 
   const fieldsAsStr: string = fields.join(", ");
 
