@@ -2,7 +2,6 @@ import {
   KeyType,
   removeDiacritics,
   removeGreekVariants,
-  toBetaCode,
   toGreek
 } from "greek-conversion";
 import { Database } from "../Database.ts";
@@ -112,19 +111,16 @@ export async function getEntries<K extends keyof QueryableFields>({
 
   const comparisonOperator: string = isExactMatch ? "=" : "GLOB";
 
-  const [searchableField, searchableAtonicField]: string[] = caseSensitive
+  const [_searchableField, searchableAtonicField]: string[] = caseSensitive
     ? ["searchable", "searchableAtonic"]
     : ["searchableCaseInsensitive", "searchableAtonicCaseInsensitive"];
 
   const morpheusData: MorpheusData = !skipMorpheus
-    ? await morpheus.lookup(
-        toBetaCode(searchStr, KeyType.GREEK, { removeDiacritics: true }),
-        { caseSensitive }
-      )
+    ? await morpheus.lookup(searchStr, { caseSensitive })
     : {};
 
   const morpheusSQLStatements: string = Object.keys(morpheusData)
-    .map((_, i) => `OR ${searchableField} = $lemma${(i += 1)} `)
+    .map((_, i) => `OR searchable = $lemma${(i += 1)} `)
     .join("");
 
   // Field `word` is mandatory in order to retrieve unique entries
