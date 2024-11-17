@@ -1,5 +1,4 @@
-database/*.db
-database/*.db.gz
+database/
 morpheus/
 node_modules/
 .env
