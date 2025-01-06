@@ -9,7 +9,7 @@ Par ailleurs, pour exploiter l'ensemble des fonctionnalités de cette API, il es
 
 ## Licence
 
-Copyright (C) 2021, 2022, 2023, 2024 Antoine Boquet, Benjamin Georges
+Copyright (C) 2021, 2022, 2023, 2024, 2025 Antoine Boquet, Benjamin Georges
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
